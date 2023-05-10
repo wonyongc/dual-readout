@@ -581,16 +581,19 @@
   <detectors>
     <detector id="1" name="DRcalo" type="ddDRcalo" readout="DRcaloSiPMreadout" region="FastSimOpFiberRegion" vis="Invisible">
       <sensitive type="DRcaloSiPMSD"/>
-      <sipmDim height="0.3*mm" material="PolyvinylChloride" vis="GenericVis">
+      <sipmDim height="3*mm" material="PolyvinylChloride" vis="GenericVis">
         <sipmGlass material="DR_PyrexGlass" vis="GlassVis"/>
-        <sipmWafer height="0.01*mm" material="Silicon" vis="WaferVis" sensitive="true"/>
-        <filter height="0.01*mm" material="Gelatin" vis="filterVis"/>
+        <sipmWafer height="1*mm" material="Silicon" vis="WaferVis" sensitive="true"/>
+        <filter height="1*mm" material="Gelatin" vis="filterVis"/>
       </sipmDim>
       <structure>
-        <dim distance="1.5*mm" dx="1.2*mm"/>
-        <cladC name="cladC" rmax="0.5*mm" rmin="0.49*mm" material="FluorinatedPolymer" vis="CladVis"/>
-        <coreC name="coreC" rmax="0.5*mm" rmin="0.49*mm" material="PMMA" vis="CerenVis"/> <!--also cladS-->
-        <coreS name="coreS" rmax="0.5*mm" rmin="0.485*mm" material="DR_Polystyrene" vis="ScintVis"/>
+        <dim distance="30*mm" dx="12*mm"/>
+        <cladC name="cladC" rmax="25*mm" rmin="24*mm" material="FluorinatedPolymer" vis="CladVis"/>
+        <coreC name="coreC" rmax="25*mm" rmin="24*mm" material="PMMA" vis="CerenVis"/> <!--also cladS-->
+        <coreS name="coreS" rmax="25*mm" rmin="23*mm" material="DR_Polystyrene" vis="ScintVis"/>
+        <hole name="hole" rmax="25*mm" material="DR_Air" vis="GenericVis" gap="1"/>
+        <dark name="dark" rmax="25*mm" material="PolyvinylChloride" vis="GenericVis"/>
+        <mirror name="mirror" rmax="25*mm" height="1*mm" material="Aluminum" vis="GlassVis"/>
       </structure>
       <barrel height="2.*m" rmin="2.5*m" nphi="36" theta="0.0" start="0" material="Copper" vis="TowerVis">
         <deltatheta deltatheta="0.019634954"/>

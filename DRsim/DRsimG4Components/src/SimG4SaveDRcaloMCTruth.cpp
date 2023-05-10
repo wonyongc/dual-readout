@@ -36,13 +36,36 @@ StatusCode SimG4SaveDRcaloMCTruth::initialize() {
 StatusCode SimG4SaveDRcaloMCTruth::finalize() { return GaudiTool::finalize(); }
 
 StatusCode SimG4SaveDRcaloMCTruth::saveOutput(const G4Event&) {
-  auto* edeps = m_eventAction->getEdepsCollection();
-  auto* edeps3d = m_eventAction->getEdeps3dCollection();
+
+  auto* edepsHCAL = m_eventAction->getEdepsCollectionHCAL();
+  auto* edeps3dHCAL = m_eventAction->getEdeps3dCollectionHCAL();
+
+  auto* edepsECALF = m_eventAction->getEdepsCollectionECALF();
+  auto* edeps3dECALF = m_eventAction->getEdeps3dCollectionECALF();
+
+  auto* edepsECALR = m_eventAction->getEdepsCollectionECALR();
+  auto* edeps3dECALR = m_eventAction->getEdeps3dCollectionECALR();
+
+  auto* edepsECALFCher = m_eventAction->getEdepsCollectionECALFCher();
+  auto* edepsECALRCher = m_eventAction->getEdepsCollectionECALRCher();
+
   auto* leakages = m_eventAction->getLeakagesCollection();
 
-  m_Edeps.put(edeps);
-  m_Edeps3d.put(edeps3d);
+  m_EdepsHCAL.put(edepsHCAL);
+  m_Edeps3dHCAL.put(edeps3dHCAL);
+
+  m_EdepsECALF.put(edepsECALF);
+  m_Edeps3dECALF.put(edeps3dECALF);
+
+  m_EdepsECALR.put(edepsECALR);
+  m_Edeps3dECALR.put(edeps3dECALR);
+
+  m_EdepsECALFCher.put(edepsECALFCher);
+  m_EdepsECALRCher.put(edepsECALRCher);
+
   m_Leakages.put(leakages);
+
+
 
   return StatusCode::SUCCESS;
 }

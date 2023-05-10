@@ -25,8 +25,18 @@ public:
   virtual StatusCode saveOutput(const G4Event& aEvent) final;
 
 private:
-  DataHandle<edm4hep::SimCalorimeterHitCollection> m_Edeps{"SimCalorimeterHits", Gaudi::DataHandle::Writer, this};
-  DataHandle<edm4hep::SimCalorimeterHitCollection> m_Edeps3d{"Sim3dCalorimeterHits", Gaudi::DataHandle::Writer, this};
+  DataHandle<edm4hep::SimCalorimeterHitCollection> m_EdepsHCAL{"SimCalorimeterHitsHCAL", Gaudi::DataHandle::Writer, this};
+  DataHandle<edm4hep::SimCalorimeterHitCollection> m_Edeps3dHCAL{"Sim3dCalorimeterHitsHCAL", Gaudi::DataHandle::Writer, this};
+
+  DataHandle<edm4hep::SimCalorimeterHitCollection> m_EdepsECALF{"SimCalorimeterHitsECALF", Gaudi::DataHandle::Writer, this};
+  DataHandle<edm4hep::SimCalorimeterHitCollection> m_Edeps3dECALF{"Sim3dCalorimeterHitsECALF", Gaudi::DataHandle::Writer, this};
+
+  DataHandle<edm4hep::SimCalorimeterHitCollection> m_EdepsECALR{"SimCalorimeterHitsECALR", Gaudi::DataHandle::Writer, this};
+  DataHandle<edm4hep::SimCalorimeterHitCollection> m_Edeps3dECALR{"Sim3dCalorimeterHitsECALR", Gaudi::DataHandle::Writer, this};
+
+  DataHandle<edm4hep::SimCalorimeterHitCollection> m_EdepsECALFCher{"SimCalorimeterHitsECALFCher", Gaudi::DataHandle::Writer, this};
+  DataHandle<edm4hep::SimCalorimeterHitCollection> m_EdepsECALRCher{"SimCalorimeterHitsECALRCher", Gaudi::DataHandle::Writer, this};
+
   DataHandle<edm4hep::MCParticleCollection> m_Leakages{"Leakages", Gaudi::DataHandle::Writer, this};
 
   drc::SimG4DRcaloEventAction* m_eventAction;

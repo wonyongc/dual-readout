@@ -12,25 +12,42 @@
 #include "G4SystemOfUnits.hh"
 #include "DD4hep/DD4hepUnits.h"
 
-drc::DRcaloSiPMSD::DRcaloSiPMSD(const std::string aName, const std::string aReadoutName, const dd4hep::Segmentation& aSeg)
-: G4VSensitiveDetector(aName), fHitCollection(0), fHCID(-1),
-fWavBin(120), fTimeBin(600), fWavlenStart(900.), fWavlenEnd(300.), fTimeStart(10.), fTimeEnd(70.)
+drc::DRcaloSiPMSD::DRcaloSiPMSD(const std::string aName,
+                                const std::string aReadoutName,
+                                const dd4hep::Segmentation& aSeg) :
+                                    G4VSensitiveDetector(aName),
+                                    fHitCollection(0),
+                                    fHCID(-1),
+                                    fWavBin(120),
+                                    fTimeBin(600),
+                                    fWavlenStart(900.),
+                                    fWavlenEnd(300.),
+                                    fTimeStart(10.),
+                                    fTimeEnd(70.)
+
 {
   collectionName.insert(aReadoutName);
+
   fSeg = dynamic_cast<dd4hep::DDSegmentation::GridDRcalo*>( aSeg.segmentation() );
   fWavlenStep = (fWavlenStart-fWavlenEnd)/(float)fWavBin;
   fTimeStep = (fTimeEnd-fTimeStart)/(float)fTimeBin;
 }
 
+
 drc::DRcaloSiPMSD::~DRcaloSiPMSD() {}
 
+
+
 void drc::DRcaloSiPMSD::Initialize(G4HCofThisEvent* hce) {
+
   fHitCollection = new drc::DRcaloSiPMHitsCollection(SensitiveDetectorName,collectionName[0]);
   if (fHCID<0) { fHCID = GetCollectionID(0); }
   hce->AddHitsCollection(fHCID,fHitCollection);
 }
 
+
 G4bool drc::DRcaloSiPMSD::ProcessHits(G4Step* step, G4TouchableHistory*) {
+
   if(step->GetTrack()->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition()) return false;
 
   auto theTouchable = step->GetPostStepPoint()->GetTouchable();
@@ -40,8 +57,12 @@ G4bool drc::DRcaloSiPMSD::ProcessHits(G4Step* step, G4TouchableHistory*) {
 
   G4ThreeVector global = step->GetPostStepPoint()->GetPosition();
   G4ThreeVector local = theTouchable->GetHistory()->GetTopTransform().TransformPoint( global );
-  dd4hep::Position loc(local.x() * dd4hep::millimeter/CLHEP::millimeter, local.y() * dd4hep::millimeter/CLHEP::millimeter, local.z() * dd4hep::millimeter/CLHEP::millimeter);
-  dd4hep::Position glob(global.x() * dd4hep::millimeter/CLHEP::millimeter, global.y() * dd4hep::millimeter/CLHEP::millimeter, global.z() * dd4hep::millimeter/CLHEP::millimeter);
+  dd4hep::Position loc(local.x() * dd4hep::millimeter/CLHEP::millimeter,
+                       local.y() * dd4hep::millimeter/CLHEP::millimeter,
+                       local.z() * dd4hep::millimeter/CLHEP::millimeter);
+  dd4hep::Position glob(global.x() * dd4hep::millimeter/CLHEP::millimeter,
+                        global.y() * dd4hep::millimeter/CLHEP::millimeter,
+                        global.z() * dd4hep::millimeter/CLHEP::millimeter);
 
   auto cID = fSeg->cellID(loc, glob, volID);
 

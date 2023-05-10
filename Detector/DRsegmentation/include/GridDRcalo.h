@@ -25,7 +25,7 @@ public:
   virtual CellID cellID(const Vector3D& aLocalPosition, const Vector3D& aGlobalPosition,
                         const VolumeID& aVolumeID) const;
 
-  VolumeID setVolumeID(int numEta, int numPhi) const;
+  VolumeID setVolumeID(int numSystem, int numEta, int numPhi, int numDepth) const;
   CellID setCellID(int numEta, int numPhi, int x, int y) const;
 
   void setGridSize(double grid) { fGridSize = grid; }
@@ -89,8 +89,10 @@ public:
   DRparamBase* setParamBase(int noEta) const;
 
 protected:
+  std::string fNumSystemId;
   std::string fNumEtaId;
   std::string fNumPhiId;
+  std::string fNumDepthId;
   std::string fXId;
   std::string fYId;
   std::string fIsCerenkovId;

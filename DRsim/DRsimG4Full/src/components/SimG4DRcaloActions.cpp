@@ -19,7 +19,8 @@ StatusCode SimG4DRcaloActions::initialize() {
     return StatusCode::FAILURE;
   }
 
-  pSeg = dynamic_cast<dd4hep::DDSegmentation::GridDRcalo*>(m_geoSvc->lcdd()->readout(m_readoutName).segmentation().segmentation());
+  pSegHCAL = dynamic_cast<dd4hep::DDSegmentation::GridDRcalo*>(m_geoSvc->lcdd()->readout(m_readoutNameHCAL).segmentation().segmentation());
+  pSegECAL = dynamic_cast<dd4hep::DDSegmentation::SCEPCALGridDRcalo*>(m_geoSvc->lcdd()->readout(m_readoutNameECAL).segmentation().segmentation());
 
   return StatusCode::SUCCESS;
 }
@@ -28,9 +29,14 @@ StatusCode SimG4DRcaloActions::finalize() { return AlgTool::finalize(); }
 
 G4VUserActionInitialization* SimG4DRcaloActions::userActionInitialization() {
   auto* actions = new drc::SimG4DRcaloActionInitialization();
-  actions->setSegmentation(pSeg);
-  actions->setBirksConstant(m_scintName,m_birks);
-  actions->setThreshold(m_thres);
+
+  actions->setSegmentationHCAL(pSegHCAL);
+  actions->setBirksConstantHCAL(m_scintNameHCAL,m_birksHCAL);
+  actions->setThresholdHCAL(m_thresHCAL);
+
+  actions->setSegmentationECAL(pSegECAL);
+  actions->setBirksConstantECAL(m_scintNameECAL,m_birksECAL);
+  actions->setThresholdECAL(m_thresECAL);
 
   return actions;
 }

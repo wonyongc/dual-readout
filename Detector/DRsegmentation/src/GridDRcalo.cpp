@@ -14,8 +14,10 @@ GridDRcalo::GridDRcalo(const std::string& cellEncoding) : Segmentation(cellEncod
   _description = "DRcalo segmentation based on the tower / (Cerenkov or Scintillation) fiber / SiPM hierarchy";
 
   // register all necessary parameters
+  registerIdentifier("identifier_system", "Cell ID identifier for numSystem", fNumSystemId, "system");
   registerIdentifier("identifier_eta", "Cell ID identifier for numEta", fNumEtaId, "eta");
   registerIdentifier("identifier_phi", "Cell ID identifier for numPhi", fNumPhiId, "phi");
+  registerIdentifier("identifier_depth", "Cell ID identifier for depth", fNumDepthId, "depth");
   registerIdentifier("identifier_x", "Cell ID identifier for x", fXId, "x");
   registerIdentifier("identifier_y", "Cell ID identifier for y", fYId, "y");
   registerIdentifier("identifier_IsCerenkov", "Cell ID identifier for IsCerenkov", fIsCerenkovId, "c");
@@ -31,8 +33,11 @@ GridDRcalo::GridDRcalo(const BitFieldCoder* decoder) : Segmentation(decoder) {
   _description = "DRcalo segmentation based on the tower / (Cerenkov or Scintillation) fiber / SiPM hierarchy";
 
   // register all necessary parameters
+
+  registerIdentifier("identifier_system", "Cell ID identifier for numSystem", fNumSystemId, "system");
   registerIdentifier("identifier_eta", "Cell ID identifier for numEta", fNumEtaId, "eta");
   registerIdentifier("identifier_phi", "Cell ID identifier for numPhi", fNumPhiId, "phi");
+  registerIdentifier("identifier_depth", "Cell ID identifier for depth", fNumDepthId, "depth");
   registerIdentifier("identifier_x", "Cell ID identifier for x", fXId, "x");
   registerIdentifier("identifier_y", "Cell ID identifier for y", fYId, "y");
   registerIdentifier("identifier_IsCerenkov", "Cell ID identifier for IsCerenkov", fIsCerenkovId, "c");
@@ -97,12 +102,16 @@ CellID GridDRcalo::cellID(const Vector3D& localPosition, const Vector3D& /*globa
   return setCellID( numEta(vID), numPhi(vID), x, y );
 }
 
-VolumeID GridDRcalo::setVolumeID(int numEta, int numPhi) const {
+VolumeID GridDRcalo::setVolumeID(int numSystem, int numEta, int numPhi, int numDepth) const {
+  VolumeID numSystemId = static_cast<VolumeID>(numSystem);
   VolumeID numEtaId = static_cast<VolumeID>(numEta);
   VolumeID numPhiId = static_cast<VolumeID>(numPhi);
+  VolumeID numDepthId = static_cast<VolumeID>(numDepth);
   VolumeID vID = 0;
+  _decoder->set(vID, fNumSystemId, numSystemId);
   _decoder->set(vID, fNumEtaId, numEtaId);
   _decoder->set(vID, fNumPhiId, numPhiId);
+  _decoder->set(vID, fNumDepthId, numDepthId);
 
   VolumeID module = 0; // Tower, SiPM layer attached to the tower, etc.
   _decoder->set(vID, fModule, module);

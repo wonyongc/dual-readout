@@ -16,45 +16,33 @@ namespace dd4hep {
     typedef GridDRcaloHandle::Object Object;
 
   public:
-    /// Default constructor
     GridDRcalo() = default;
-    /// Copy constructor
     GridDRcalo(const GridDRcalo& e) = default;
-    /// Copy Constructor from segmentation base object
     GridDRcalo(const Segmentation& e) : Handle<Object>(e) {}
-    /// Copy constructor from handle
     GridDRcalo(const Handle<Object>& e) : Handle<Object>(e) {}
-    /// Copy constructor from other polymorph/equivalent handle
     template <typename Q>
     GridDRcalo(const Handle<Q>& e) : Handle<Object>(e) {}
-    /// Assignment operator
     GridDRcalo& operator=(const GridDRcalo& seg) = default;
-    /// Equality operator
     bool operator==(const GridDRcalo& seg) const { return m_element == seg.m_element; }
-    /// determine the position based on the cell ID
     inline Position position(const CellID& id) const { return Position(access()->implementation->position(id)); }
     inline Position localPosition(const CellID& id) const { return Position(access()->implementation->localPosition(id)); }
     inline Position localPosition(int numx, int numy, int x_, int y_) const { return Position(access()->implementation->localPosition(numx,numy,x_,y_)); }
 
-    /// determine the cell ID based on the position
     inline dd4hep::CellID cellID(const Position& local, const Position& global, const VolumeID& volID) const {
       return access()->implementation->cellID(local, global, volID);
     }
 
-    inline VolumeID setVolumeID(int numEta, int numPhi) const { return access()->implementation->setVolumeID(numEta,numPhi); }
+    inline VolumeID setVolumeID(int numSystem, int numEta, int numPhi, int numDepth) const { return access()->implementation->setVolumeID(numSystem, numEta,numPhi, numDepth); }
     inline CellID setCellID(int numEta, int numPhi, int x, int y) const { return access()->implementation->setCellID(numEta, numPhi, x, y); }
 
     inline void setGridSize(double grid) { access()->implementation->setGridSize(grid); }
 
-    // Get the identifier number of a mother tower in eta or phi direction
     inline int numEta(const CellID& aCellID) const { return access()->implementation->numEta(aCellID); }
     inline int numPhi(const CellID& aCellID) const { return access()->implementation->numPhi(aCellID); }
 
-    // Get the total number of SiPMs of the mother tower in x or y direction (local coordinate)
     inline int numX(const CellID& aCellID) const { return access()->implementation->numX(aCellID); }
     inline int numY(const CellID& aCellID) const { return access()->implementation->numY(aCellID); }
 
-    // Get the identifier number of a SiPM in x or y direction (local coordinate)
     inline int x(const CellID& aCellID) const { return access()->implementation->x(aCellID); } // approx eta direction
     inline int y(const CellID& aCellID) const { return access()->implementation->y(aCellID); } // approx phi direction
 
@@ -70,7 +58,6 @@ namespace dd4hep {
     inline CellID convertFirst32to64(const int aId32) const { return access()->implementation->convertFirst32to64(aId32); }
     inline CellID convertLast32to64(const int aId32) const { return access()->implementation->convertLast32to64(aId32); }
 
-    // Methods for 32bit to 64bit en/decoder
     inline int numEta(const int& aId32) const { return access()->implementation->numEta(aId32); }
     inline int numPhi(const int& aId32) const { return access()->implementation->numPhi(aId32); }
 

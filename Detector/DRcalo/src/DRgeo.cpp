@@ -10,17 +10,17 @@
 
 namespace ddDRcalo {
   static dd4hep::Ref_t create_detector( dd4hep::Detector &description, xml_h xmlElement, dd4hep::SensitiveDetector sensDet ) {
-    // Get the detector description from the xml-tree
+
     xml_det_t    x_det = xmlElement;
     std::string  name  = x_det.nameStr();
-    // Create the detector element
     dd4hep::DetElement drDet( name, x_det.id() );
-    // set the sensitive detector type to the DD4hep calorimeter
+
     dd4hep::xml::Dimension sensDetType = xmlElement.child(_Unicode(sensitive));
+
     sensDet.setType(sensDetType.typeStr());
-    // Get the world volume
+
     dd4hep::Assembly experimentalHall("hall");
-    // Get the dimensions defined in the xml-tree
+
     xml_comp_t x_barrel ( x_det.child( _Unicode(barrel) ) );
     xml_comp_t x_endcap ( x_det.child( _Unicode(endcap) ) );
     xml_comp_t x_structure ( x_det.child( _Unicode(structure) ) );
@@ -32,6 +32,8 @@ namespace ddDRcalo {
     dd4hep::OpticalSurface filterSurfProp = surfMgr.opticalSurface("/world/"+name+"#FilterSurf");
 
     auto segmentation = dynamic_cast<dd4hep::DDSegmentation::GridDRcalo*>( sensDet.readout().segmentation().segmentation() );
+
+
     segmentation->setGridSize( x_dim.distance() );
     segmentation->setSipmSize( x_dim.dx() );
 
@@ -59,11 +61,17 @@ namespace ddDRcalo {
 
     paramBarrel->SetIsRHS(true);
     paramEndcap->SetIsRHS(true);
+
+
     constructor.construct(); // right
+
 
     paramBarrel->SetIsRHS(false);
     paramEndcap->SetIsRHS(false);
+
+
     constructor.construct(); // left
+
 
     dd4hep::PlacedVolume hallPlace = description.pickMotherVolume(drDet).placeVolume(experimentalHall);
     hallPlace.addPhysVolID("system",x_det.id());

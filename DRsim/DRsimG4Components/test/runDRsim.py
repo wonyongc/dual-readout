@@ -8,12 +8,12 @@ dataservice = k4DataSvc("EventDataSvc")
 from Configurables import GenAlg, MomentumRangeParticleGun
 pgun = MomentumRangeParticleGun("PGun",
   PdgCodes=[11], # electron
-  MomentumMin = 20.*units.GeV, # GeV
-  MomentumMax = 20.*units.GeV, # GeV
-  ThetaMin = 1.5335, # rad
-  ThetaMax = 1.5335, # rad
-  PhiMin = 0.01745, # rad
-  PhiMax = 0.01745 # rad
+  MomentumMin = 240.*units.GeV, # GeV
+  MomentumMax = 240.*units.GeV, # GeV
+  ThetaMin = 0.1, # rad
+  ThetaMax = 3.1, # rad
+  PhiMin = 0.0, # rad
+  PhiMax = 6.28, # rad
 )
 
 from Configurables import FlatSmearVertex
@@ -34,7 +34,7 @@ from Configurables import GeoSvc
 geoservice = GeoSvc(
   "GeoSvc",
   detectors = [
-    'file:share/compact/DRcalo.xml'
+    'file:/home/wonyongc/src/hep/dual-readout/Detector/DRcalo/compact/SCEPCAL.xml'
   ]
 )
 
@@ -70,7 +70,7 @@ geantsim = SimG4Alg("SimG4Alg",
 )
 
 from Configurables import PodioOutput
-podiooutput = PodioOutput("PodioOutput", filename = "sim.root")
+podiooutput = PodioOutput("PodioOutput", filename = "scepcal_test_fullsize_10.root")
 podiooutput.outputCommands = ["keep *"]
 
 from Configurables import RndmGenSvc, HepRndm__Engine_CLHEP__RanluxEngine_

@@ -11,6 +11,7 @@
 
 namespace drc {
 class SimG4DRcaloEventAction : public G4UserEventAction {
+    
 public:
   SimG4DRcaloEventAction();
   virtual ~SimG4DRcaloEventAction();
@@ -20,18 +21,40 @@ public:
 
   void setSteppingAction(SimG4DRcaloSteppingAction* steppingAction) { pSteppingAction = steppingAction; }
 
-  edm4hep::SimCalorimeterHitCollection* getEdepsCollection() { return m_Edeps; }
-  edm4hep::SimCalorimeterHitCollection* getEdeps3dCollection() { return m_Edeps3d; }
+  edm4hep::SimCalorimeterHitCollection* getEdepsCollectionHCAL() { return m_EdepsHCAL; }
+  edm4hep::SimCalorimeterHitCollection* getEdeps3dCollectionHCAL() { return m_Edeps3dHCAL; }
+
+  edm4hep::SimCalorimeterHitCollection* getEdepsCollectionECALF() { return m_EdepsECALF; }
+  edm4hep::SimCalorimeterHitCollection* getEdeps3dCollectionECALF() { return m_Edeps3dECALF; }
+
+  edm4hep::SimCalorimeterHitCollection* getEdepsCollectionECALR() { return m_EdepsECALR; }
+  edm4hep::SimCalorimeterHitCollection* getEdeps3dCollectionECALR() { return m_Edeps3dECALR; }
+
+  edm4hep::SimCalorimeterHitCollection* getEdepsCollectionECALFCher() { return m_EdepsECALFCher; }
+  edm4hep::SimCalorimeterHitCollection* getEdepsCollectionECALRCher() { return m_EdepsECALRCher; }
+
   edm4hep::MCParticleCollection* getLeakagesCollection() { return m_Leakages; }
 
 private:
   SimG4DRcaloSteppingAction* pSteppingAction;
 
   // ownership of collections transferred to DataWrapper<T>
-  edm4hep::SimCalorimeterHitCollection* m_Edeps;
-  edm4hep::SimCalorimeterHitCollection* m_Edeps3d;
+  edm4hep::SimCalorimeterHitCollection* m_EdepsHCAL;
+  edm4hep::SimCalorimeterHitCollection* m_Edeps3dHCAL;
+
+  edm4hep::SimCalorimeterHitCollection* m_EdepsECALF;
+  edm4hep::SimCalorimeterHitCollection* m_Edeps3dECALF;
+
+  edm4hep::SimCalorimeterHitCollection* m_EdepsECALR;
+  edm4hep::SimCalorimeterHitCollection* m_Edeps3dECALR;
+
+  edm4hep::SimCalorimeterHitCollection* m_EdepsECALFCher;
+  edm4hep::SimCalorimeterHitCollection* m_EdepsECALRCher;
+
   edm4hep::MCParticleCollection* m_Leakages;
+
 };
+
 }
 
 #endif

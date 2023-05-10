@@ -28,11 +28,17 @@ private:
   /// Pointer to the geometry service
   ServiceHandle<IGeoSvc> m_geoSvc;
 
-  Gaudi::Property<std::vector<std::string>> m_readoutNames{this, "readoutNames", {"DRcaloSiPMreadout"}, "Name of the readouts (hits collections) to save"};
+  Gaudi::Property<std::vector<std::string>> m_readoutNames{this, "readoutNames", {"DRcaloSiPMreadout", "SCEPCALDRcaloSiPMreadout"},
+                                                           "Name of the readouts (hits collections) to save"};
 
-  DataHandle<edm4hep::RawCalorimeterHitCollection> mRawCaloHits{"RawCalorimeterHits", Gaudi::DataHandle::Writer, this};
-  DataHandle<edm4hep::SparseVectorCollection> mTimeStruct{"RawTimeStructs", Gaudi::DataHandle::Writer, this};
-  DataHandle<edm4hep::SparseVectorCollection> mWavlenStruct{"RawWavlenStructs", Gaudi::DataHandle::Writer, this};
+  DataHandle<edm4hep::RawCalorimeterHitCollection> mRawCaloHitsHCAL{"RawCalorimeterHitsHCAL", Gaudi::DataHandle::Writer, this};
+  DataHandle<edm4hep::SparseVectorCollection> mTimeStructHCAL{"RawTimeStructsHCAL", Gaudi::DataHandle::Writer, this};
+  DataHandle<edm4hep::SparseVectorCollection> mWavlenStructHCAL{"RawWavlenStructsHCAL", Gaudi::DataHandle::Writer, this};
+
+  DataHandle<edm4hep::RawCalorimeterHitCollection> mRawCaloHitsECAL{"RawCalorimeterHitsECAL", Gaudi::DataHandle::Writer, this};
+  DataHandle<edm4hep::SparseVectorCollection> mTimeStructECAL{"RawTimeStructsECAL", Gaudi::DataHandle::Writer, this};
+  DataHandle<edm4hep::SparseVectorCollection> mWavlenStructECAL{"RawWavlenStructsECAL", Gaudi::DataHandle::Writer, this};
+
 };
 
 #endif

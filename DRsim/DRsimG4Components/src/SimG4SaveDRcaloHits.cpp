@@ -42,22 +42,26 @@ StatusCode SimG4SaveDRcaloHits::initialize() {
 StatusCode SimG4SaveDRcaloHits::finalize() { return GaudiTool::finalize(); }
 
 StatusCode SimG4SaveDRcaloHits::saveOutput(const G4Event& aEvent) {
+
   G4HCofThisEvent* collections = aEvent.GetHCofThisEvent();
   G4VHitsCollection* collect;
   drc::DRcaloSiPMHit* hit;
 
   if (collections != nullptr) {
-    edm4hep::RawCalorimeterHitCollection* caloHits = mRawCaloHits.createAndPut();
-    edm4hep::SparseVectorCollection* timeStructs = mTimeStruct.createAndPut();
-    edm4hep::SparseVectorCollection* wavStructs = mWavlenStruct.createAndPut();
+
+    edm4hep::RawCalorimeterHitCollection* caloHits = mRawCaloHitsECAL.createAndPut();
+    edm4hep::SparseVectorCollection* timeStructs = mTimeStructECAL.createAndPut();
+    edm4hep::SparseVectorCollection* wavStructs = mWavlenStructECAL.createAndPut();
 
     for (int iter_coll = 0; iter_coll < collections->GetNumberOfCollections(); iter_coll++) {
       collect = collections->GetHC(iter_coll);
 
       if (std::find(m_readoutNames.begin(), m_readoutNames.end(), collect->GetName()) != m_readoutNames.end()) {
+
         size_t n_hit = collect->GetSize();
 
         for (size_t iter_hit = 0; iter_hit < n_hit; iter_hit++) {
+
           hit = dynamic_cast<drc::DRcaloSiPMHit*>(collect->GetHit(iter_hit));
 
           auto caloHit = caloHits->create();

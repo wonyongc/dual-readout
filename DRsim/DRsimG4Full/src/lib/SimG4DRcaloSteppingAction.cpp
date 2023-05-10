@@ -6,62 +6,169 @@
 
 #include "CLHEP/Units/SystemOfUnits.h"
 #include "DD4hep/DD4hepUnits.h"
+#include <bitset>
 
 namespace drc {
 
 SimG4DRcaloSteppingAction::SimG4DRcaloSteppingAction()
-: G4UserSteppingAction(), fPrevTower(0), fPrevFiber(0) {}
+: G4UserSteppingAction(), fPrevTowerHCAL(0), fPrevFiberHCAL(0), fPrevTowerECALF(0), fPrevTowerECALR(0),
+  fPrevTowerECALFCher(0), fPrevTowerECALRCher(0) {}
 
 SimG4DRcaloSteppingAction::~SimG4DRcaloSteppingAction() {}
 
-void SimG4DRcaloSteppingAction::UserSteppingAction(const G4Step* step) {
-  G4Track* track = step->GetTrack();
-  G4ParticleDefinition* particle = track->GetDefinition();
 
-  if ( particle == G4OpticalPhoton::OpticalPhotonDefinition() ) return;
+void SimG4DRcaloSteppingAction::UserSteppingAction(const G4Step* step) {
 
   G4StepPoint* presteppoint = step->GetPreStepPoint();
   G4StepPoint* poststeppoint = step->GetPostStepPoint();
+
+  G4Track* track = step->GetTrack();
+  G4ParticleDefinition* particle = track->GetDefinition();
+
+  G4VPhysicalVolume* PreStepVolume = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume();
+  std::cout<<"Pre-step Volume Name: " << PreStepVolume->GetName() << std::endl;
+
   G4TouchableHandle theTouchable = presteppoint->GetTouchableHandle();
+
+  //  if ( theTouchable->GetHistoryDepth()<2 ) return; // skip particles in the world or assembly volume
+
+  //historyDepth    world
+  //historyDepth-1  experimentalhall (detector)
+  //historyDepth-2  towerAssemblyVol, assemblyEnvelopVol
+
+  int volID = theTouchable->GetCopyNumber();
+
+  std::bitset<32> volIdbits(volID);
+
+  int system = (volID) & 32;
+  int eta = (volID >> 5) & 1024;
+  int phi = (volID >> 15) & 1024;
+  int depth = (volID >> 25) & 8;
+
+  std::cout << "Stepping Action start: volID bits: " << volIdbits <<std::endl;
+  std::cout << "Stepping Action start: system: " << system << " eta: "<<eta<<" phi: "<<phi<<" depth: "<< depth <<std::endl;
+
+
+  if (system==1) ECALSteppingAction(step, presteppoint, particle);
+  else if (system==2) HCALSteppingAction(step, presteppoint, particle);
 
   // leakage particles
   if (poststeppoint->GetStepStatus() == fWorldBoundary) {
     saveLeakage(track,presteppoint);
+    return;
+  }
+}
+
+void SimG4DRcaloSteppingAction::ECALSteppingAction(const G4Step* step, G4StepPoint* presteppoint, G4ParticleDefinition* particle) {
+  G4Track* track = step->GetTrack();
+  G4TouchableHandle theTouchable = presteppoint->GetTouchableHandle();
+
+  float edep=step->GetTotalEnergyDeposit()*CLHEP::MeV/CLHEP::GeV;
+  int towerNum32=theTouchable->GetCopyNumber(theTouchable->GetHistoryDepth()-2);
+
+  int system=(towerNum32)&32;
+  int eta=(towerNum32>>5)&1024;
+  int phi=(towerNum32>>15)&1024;
+  int depth=(towerNum32>>25)&8;
+  std::cout<<"ECAL crystal eta: "<<eta<<" phi: "<<phi<<" depth: "<< depth <<std::endl;
+
+  auto towerNum64=pSegECAL->convertFirst32to64(towerNum32);
+
+  if (depth==1) {
+    if (edep>m_thresECAL) {
+      auto simEdep3dECALF=m_Edeps3dECALF->create();
+
+      simEdep3dECALF.setCellID(static_cast<unsigned long long>(towerNum64));
+      simEdep3dECALF.setEnergy(edep);
+
+      auto &pos=presteppoint->GetPosition();
+      simEdep3dECALF.setPosition({static_cast<float>(pos.x()*CLHEP::millimeter),
+                             static_cast<float>(pos.y()*CLHEP::millimeter),
+                             static_cast<float>(pos.z()*CLHEP::millimeter)});
+    }
+    accumulateECALF(fPrevTowerECALF, towerNum64, edep);
+  } else if (depth==2) {
+    if (edep>m_thresECAL) {
+      auto simEdep3dECALR=m_Edeps3dECALR->create();
+
+      simEdep3dECALR.setCellID(static_cast<unsigned long long>(towerNum64));
+      simEdep3dECALR.setEnergy(edep);
+
+      auto &pos=presteppoint->GetPosition();
+      simEdep3dECALR.setPosition({static_cast<float>(pos.x()*CLHEP::millimeter),
+                             static_cast<float>(pos.y()*CLHEP::millimeter),
+                             static_cast<float>(pos.z()*CLHEP::millimeter)});
+    }
+    accumulateECALR(fPrevTowerECALR, towerNum64, edep);
+  }
+
+  if ((track->GetCurrentStepNumber()==1)&&particle==G4OpticalPhoton::OpticalPhotonDefinition()) {
+
+    G4String processName=track->GetCreatorProcess()->GetProcessName();
+
+    if (processName=="Cerenkov") {
+      //kill very long or short wavelengths
+      float photWL=1239.84187/(track->GetTotalEnergy()*CLHEP::eV/CLHEP::GeV);
+
+      if (photWL>1000||photWL<300) {
+        std::cout<<"Cerenkov photon killed with WL: "<<photWL<<std::endl;
+        track->SetTrackStatus(fKillTrackAndSecondaries);
+      } else {
+        if (depth==1) {
+          accumulateECALFCher(fPrevTowerECALFCher, towerNum64);
+        } else if (depth==2) {
+          accumulateECALRCher(fPrevTowerECALRCher, towerNum64);
+        }
+
+        //do not propagate the photon
+//        theTrack->SetTrackStatus(fKillTrackAndSecondaries);
+      }
+
+    };
+
 
     return;
   }
+}
 
-  if ( theTouchable->GetHistoryDepth()<2 ) return; // skip particles in the world or assembly volume
+void SimG4DRcaloSteppingAction::HCALSteppingAction(const G4Step* step, G4StepPoint* presteppoint, G4ParticleDefinition* particle) {
 
-  // MC truth energy deposits
+  if ( particle == G4OpticalPhoton::OpticalPhotonDefinition() ) return;
+  G4TouchableHandle theTouchable = presteppoint->GetTouchableHandle();
+
   float edep = step->GetTotalEnergyDeposit()*CLHEP::MeV/CLHEP::GeV;
-
   int towerNum32 = theTouchable->GetCopyNumber( theTouchable->GetHistoryDepth()-2 );
-  auto towerNum64 = pSeg->convertFirst32to64( towerNum32 );
 
-  if (edep > m_thres) {
-    auto simEdep3d = m_Edeps3d->create();
-    simEdep3d.setCellID( static_cast<unsigned long long>(towerNum64) );
-    simEdep3d.setEnergy(edep);
+  int system = (towerNum32) & 32;
+  int eta = (towerNum32 >> 5) & 1024;
+  int phi = (towerNum32 >> 15) & 1024;
+  int depth = (towerNum32 >> 25) & 8;
+  std::cout << "HCAL tower eta: " << eta << " phi: " << phi << " depth: " << depth << std::endl;
+
+  auto towerNum64 = pSegHCAL->convertFirst32to64( towerNum32 );
+
+  if (edep > m_thresHCAL) {
+    auto simEdep3dHCAL = m_Edeps3dHCAL->create();
+
+    simEdep3dHCAL.setCellID( static_cast<unsigned long long>(towerNum64) );
+    simEdep3dHCAL.setEnergy(edep);
 
     auto& pos = presteppoint->GetPosition();
-    simEdep3d.setPosition( { static_cast<float>(pos.x()*CLHEP::millimeter),
+    simEdep3dHCAL.setPosition( { static_cast<float>(pos.x()*CLHEP::millimeter),
                              static_cast<float>(pos.y()*CLHEP::millimeter),
                              static_cast<float>(pos.z()*CLHEP::millimeter) } );
   }
-
-  accumulate(fPrevTower,towerNum64,edep);
-
+  accumulateHCAL(fPrevTowerHCAL,towerNum64,edep);
   return;
 }
 
-void SimG4DRcaloSteppingAction::accumulate(unsigned int &prev, dd4hep::DDSegmentation::CellID& id64, float edep) {
+void SimG4DRcaloSteppingAction::accumulateECALF(unsigned int &prev, dd4hep::DDSegmentation::CellID& id64, float edep) {
   // search for the element
   bool found = false;
   edm4hep::SimCalorimeterHit* thePtr = nullptr;
 
-  if ( m_Edeps->size() > prev ) { // check previous element
-    auto element = m_Edeps->at(prev);
+  if ( m_EdepsECALF->size() > prev ) { // check previous element
+    auto element = m_EdepsECALF->at(prev);
     if ( checkId(element, id64) ) {
       thePtr = &element;
       found = true;
@@ -69,8 +176,8 @@ void SimG4DRcaloSteppingAction::accumulate(unsigned int &prev, dd4hep::DDSegment
   }
 
   if (!found) { // fall back to loop
-    for (unsigned int iElement = 0; iElement < m_Edeps->size(); iElement++) {
-      auto element = m_Edeps->at(iElement);
+    for (unsigned int iElement = m_EdepsECALF->size()-1; iElement >=0; iElement--) {
+      auto element = m_EdepsECALF->at(iElement);
       if ( checkId(element, id64) ) {
         found = true;
         prev = iElement;
@@ -82,16 +189,190 @@ void SimG4DRcaloSteppingAction::accumulate(unsigned int &prev, dd4hep::DDSegment
   }
 
   if (!found) { // create
-    auto simEdep = m_Edeps->create();
-    simEdep.setCellID( static_cast<unsigned long long>(id64) );
-    simEdep.setEnergy(0.); // added later
+    auto simEdepECALF = m_EdepsECALF->create();
+    simEdepECALF.setCellID( static_cast<unsigned long long>(id64) );
+    simEdepECALF.setEnergy(0.); // added later
 
-    auto pos = pSeg->position(id64);
-    simEdep.setPosition( { static_cast<float>(pos.x()*CLHEP::millimeter/dd4hep::millimeter),
-                           static_cast<float>(pos.y()*CLHEP::millimeter/dd4hep::millimeter),
-                           static_cast<float>(pos.z()*CLHEP::millimeter/dd4hep::millimeter) } );
-    prev = m_Edeps->size();
-    thePtr = &simEdep;
+    auto pos = pSegECAL->position(id64);
+    simEdepECALF.setPosition( { static_cast<float>(pos.x()*CLHEP::millimeter/dd4hep::millimeter),
+                               static_cast<float>(pos.y()*CLHEP::millimeter/dd4hep::millimeter),
+                               static_cast<float>(pos.z()*CLHEP::millimeter/dd4hep::millimeter) } );
+
+    prev = m_EdepsECALF->size();
+    thePtr = &simEdepECALF;
+  }
+
+  auto edepPrev = thePtr->getEnergy();
+  thePtr->setEnergy( edepPrev + edep );
+}
+void SimG4DRcaloSteppingAction::accumulateECALR(unsigned int &prev, dd4hep::DDSegmentation::CellID& id64, float edep) {
+  // search for the element
+  bool found = false;
+  edm4hep::SimCalorimeterHit* thePtr = nullptr;
+
+  if ( m_EdepsECALR->size() > prev ) { // check previous element
+    auto element = m_EdepsECALR->at(prev);
+    if ( checkId(element, id64) ) {
+      thePtr = &element;
+      found = true;
+    }
+  }
+
+  if (!found) { // fall back to loop
+    for (unsigned int iElement = m_EdepsECALR->size()-1; iElement >=0; iElement--) {
+      auto element = m_EdepsECALR->at(iElement);
+      if ( checkId(element, id64) ) {
+        found = true;
+        prev = iElement;
+        thePtr = &element;
+
+        break;
+      }
+    }
+  }
+
+  if (!found) { // create
+    auto simEdepECALR = m_EdepsECALR->create();
+    simEdepECALR.setCellID( static_cast<unsigned long long>(id64) );
+    simEdepECALR.setEnergy(0.); // added later
+
+    auto pos = pSegECAL->position(id64);
+    simEdepECALR.setPosition( { static_cast<float>(pos.x()*CLHEP::millimeter/dd4hep::millimeter),
+                               static_cast<float>(pos.y()*CLHEP::millimeter/dd4hep::millimeter),
+                               static_cast<float>(pos.z()*CLHEP::millimeter/dd4hep::millimeter) } );
+
+    prev = m_EdepsECALR->size();
+    thePtr = &simEdepECALR;
+  }
+
+  auto edepPrev = thePtr->getEnergy();
+  thePtr->setEnergy( edepPrev + edep );
+}
+void SimG4DRcaloSteppingAction::accumulateECALFCher(unsigned int &prev, dd4hep::DDSegmentation::CellID& id64) {
+  // search for the element
+  bool found = false;
+  edm4hep::SimCalorimeterHit* thePtr = nullptr;
+
+  if ( m_EdepsECALFCher->size() > prev ) { // check previous element
+    auto element = m_EdepsECALFCher->at(prev);
+    if ( checkId(element, id64) ) {
+      thePtr = &element;
+      found = true;
+    }
+  }
+
+  if (!found) { // fall back to loop
+    for (unsigned int iElement = m_EdepsECALFCher->size()-1; iElement >=0; iElement--) {
+      auto element = m_EdepsECALFCher->at(iElement);
+      if ( checkId(element, id64) ) {
+        found = true;
+        prev = iElement;
+        thePtr = &element;
+
+        break;
+      }
+    }
+  }
+
+  if (!found) { // create
+    auto simEdepECALFCher = m_EdepsECALFCher->create();
+    simEdepECALFCher.setCellID( static_cast<unsigned long long>(id64) );
+    simEdepECALFCher.setEnergy(0.); // added later
+
+    auto pos = pSegECAL->position(id64);
+    simEdepECALFCher.setPosition( { static_cast<float>(pos.x()*CLHEP::millimeter/dd4hep::millimeter),
+                                static_cast<float>(pos.y()*CLHEP::millimeter/dd4hep::millimeter),
+                                static_cast<float>(pos.z()*CLHEP::millimeter/dd4hep::millimeter) } );
+
+    prev = m_EdepsECALFCher->size();
+    thePtr = &simEdepECALFCher;
+  }
+
+  auto edepPrev = thePtr->getEnergy();
+  thePtr->setEnergy( edepPrev + 1 );
+}
+void SimG4DRcaloSteppingAction::accumulateECALRCher(unsigned int &prev, dd4hep::DDSegmentation::CellID& id64) {
+  // search for the element
+  bool found = false;
+  edm4hep::SimCalorimeterHit* thePtr = nullptr;
+
+  if ( m_EdepsECALRCher->size() > prev ) { // check previous element
+    auto element = m_EdepsECALRCher->at(prev);
+    if ( checkId(element, id64) ) {
+      thePtr = &element;
+      found = true;
+    }
+  }
+
+  if (!found) { // fall back to loop
+    for (unsigned int iElement = m_EdepsECALRCher->size()-1; iElement >=0; iElement--) {
+      auto element = m_EdepsECALRCher->at(iElement);
+      if ( checkId(element, id64) ) {
+        found = true;
+        prev = iElement;
+        thePtr = &element;
+
+        break;
+      }
+    }
+  }
+
+  if (!found) { // create
+    auto simEdepECALRCher = m_EdepsECALRCher->create();
+    simEdepECALRCher.setCellID( static_cast<unsigned long long>(id64) );
+    simEdepECALRCher.setEnergy(0.); // added later
+
+    auto pos = pSegECAL->position(id64);
+    simEdepECALRCher.setPosition( { static_cast<float>(pos.x()*CLHEP::millimeter/dd4hep::millimeter),
+                                    static_cast<float>(pos.y()*CLHEP::millimeter/dd4hep::millimeter),
+                                    static_cast<float>(pos.z()*CLHEP::millimeter/dd4hep::millimeter) } );
+
+    prev = m_EdepsECALRCher->size();
+    thePtr = &simEdepECALRCher;
+  }
+
+  auto edepPrev = thePtr->getEnergy();
+  thePtr->setEnergy( edepPrev + 1 );
+}
+
+void SimG4DRcaloSteppingAction::accumulateHCAL(unsigned int &prev, dd4hep::DDSegmentation::CellID& id64, float edep) {
+  // search for the element
+  bool found = false;
+  edm4hep::SimCalorimeterHit* thePtr = nullptr;
+
+  if ( m_EdepsHCAL->size() > prev ) { // check previous element
+    auto element = m_EdepsHCAL->at(prev);
+    if ( checkId(element, id64) ) {
+      thePtr = &element;
+      found = true;
+    }
+  }
+
+  if (!found) { // fall back to loop
+    for (unsigned int iElement = m_EdepsHCAL->size()-1; iElement >=0; iElement--) {
+      auto element = m_EdepsHCAL->at(iElement);
+      if ( checkId(element, id64) ) {
+        found = true;
+        prev = iElement;
+        thePtr = &element;
+
+        break;
+      }
+    }
+  }
+
+  if (!found) { // create
+    auto simEdepHCAL = m_EdepsHCAL->create();
+    simEdepHCAL.setCellID( static_cast<unsigned long long>(id64) );
+    simEdepHCAL.setEnergy(0.); // added later
+
+    auto pos = pSegHCAL->position(id64);
+    simEdepHCAL.setPosition( { static_cast<float>(pos.x()*CLHEP::millimeter/dd4hep::millimeter),
+                               static_cast<float>(pos.y()*CLHEP::millimeter/dd4hep::millimeter),
+                               static_cast<float>(pos.z()*CLHEP::millimeter/dd4hep::millimeter) } );
+
+    prev = m_EdepsHCAL->size();
+    thePtr = &simEdepHCAL;
   }
 
   auto edepPrev = thePtr->getEnergy();

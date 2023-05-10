@@ -4,6 +4,7 @@
 #include "G4VUserActionInitialization.hh"
 
 #include "GridDRcalo.h"
+#include "SCEPCALGridDRcalo.h"
 
 namespace drc {
 class SimG4DRcaloActionInitialization : public G4VUserActionInitialization {
@@ -13,15 +14,26 @@ public:
 
   virtual void Build() const final;
 
-  void setSegmentation(dd4hep::DDSegmentation::GridDRcalo* seg) { pSeg = seg; }
-  void setThreshold(const double thres) { m_thres = thres; }
-  void setBirksConstant(const std::string scintName, const double birks);
+  void setSegmentationHCAL(dd4hep::DDSegmentation::GridDRcalo* seg) { pSegHCAL = seg; }
+  void setThresholdHCAL(const double thres) { m_thresHCAL = thres; }
+  void setBirksConstantHCAL(const std::string scintName, const double birks);
+
+  void setSegmentationECAL(dd4hep::DDSegmentation::SCEPCALGridDRcalo* seg) { pSegECAL = seg; }
+  void setThresholdECAL(const double thres) { m_thresECAL = thres; }
+  void setBirksConstantECAL(const std::string scintName, const double birks);
 
 private:
-  dd4hep::DDSegmentation::GridDRcalo* pSeg;
-  std::string m_scintName;
-  double m_birks;
-  double m_thres;
+  dd4hep::DDSegmentation::GridDRcalo* pSegHCAL;
+  dd4hep::DDSegmentation::SCEPCALGridDRcalo* pSegECAL;
+
+  std::string m_scintNameHCAL;
+  std::string m_scintNameECAL;
+
+  double m_birksHCAL;
+  double m_birksECAL;
+
+  double m_thresHCAL;
+  double m_thresECAL;
 };
 }
 

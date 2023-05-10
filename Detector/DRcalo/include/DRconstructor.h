@@ -31,10 +31,10 @@ namespace ddDRcalo {
 
   private:
     void implementTowers(xml_comp_t& x_theta, dd4hep::DDSegmentation::DRparamBase* param);
-    void implementFibers(xml_comp_t& x_theta, dd4hep::Volume& towerVol, dd4hep::Trap& trap, dd4hep::DDSegmentation::DRparamBase* param);
+    void implementFibersAndSipms(xml_comp_t& x_theta, dd4hep::Volume& towerVol, dd4hep::Trap& trap, dd4hep::DDSegmentation::DRparamBase* param, dd4hep::Volume& sipmLayerVol);
     void implementFiber(dd4hep::Volume& towerVol, dd4hep::Position& pos, int col, int row,
                         dd4hep::Tube& fiber, dd4hep::Tube& fiberC, dd4hep::Tube& fiberS);
-    void implementSipms(dd4hep::Volume& sipmLayerVol);
+//    void implementSipms(dd4hep::Volume& sipmLayerVol);
     double calculateDistAtZ(TGeoTrap* rootTrap, dd4hep::Position& pos, double* norm, double z);
     float calculateFiberLen(TGeoTrap* rootTrap, dd4hep::Position& pos, double* norm, double z1, double diff, double towerHeight);
     bool checkContained(TGeoTrap* rootTrap, dd4hep::Position& pos, double z, bool throwExcept=false);
