@@ -1,0 +1,34 @@
+DRenv.sh: line 65: export: `-lz': not a valid identifier
+DRenv.sh: line 65: export: `-lGL': not a valid identifier
+DRenv.sh: line 65: export: `-lGLU': not a valid identifier
+DRenv.sh: line 65: export: `-lfontconfig': not a valid identifier
+DRenv.sh: line 65: export: `-lfreetype': not a valid identifier
+DRenv.sh: line 65: export: `-lX11': not a valid identifier
+DRenv.sh: line 65: export: `-lncurses': not a valid identifier
+DRenv.sh: line 65: export: `-lpcre': not a valid identifier
+DRenv.sh: line 65: export: `-ldl': not a valid identifier
+DRenv.sh: line 65: export: `-lgfortran': not a valid identifier
+DRenv.sh: line 65: export: `-lm': not a valid identifier
+DRenv.sh: line 65: export: `-lquadmath': not a valid identifier
+DRenv.sh: line 65: export: `-lutil': not a valid identifier
+DRenv.sh: line 65: export: `-lm': not a valid identifier
+DRenv.sh: line 65: export: `-L/cvmfs/sft.cern.ch/lcg/views/LCG_100/x86_64-centos7-gcc8-opt/lib': not a valid identifier
+DRenv.sh: line 66: export: `-lz': not a valid identifier
+DRenv.sh: line 66: export: `-lGL': not a valid identifier
+DRenv.sh: line 66: export: `-lGLU': not a valid identifier
+DRenv.sh: line 66: export: `-lfontconfig': not a valid identifier
+DRenv.sh: line 66: export: `-lfreetype': not a valid identifier
+DRenv.sh: line 66: export: `-lX11': not a valid identifier
+DRenv.sh: line 66: export: `-lncurses': not a valid identifier
+DRenv.sh: line 66: export: `-lpcre': not a valid identifier
+DRenv.sh: line 66: export: `-ldl': not a valid identifier
+DRenv.sh: line 66: export: `-lgfortran': not a valid identifier
+DRenv.sh: line 66: export: `-lm': not a valid identifier
+DRenv.sh: line 66: export: `-lquadmath': not a valid identifier
+DRenv.sh: line 66: export: `-lutil': not a valid identifier
+DRenv.sh: line 66: export: `-lm': not a valid identifier
+DRenv.sh: line 66: export: `-L/cvmfs/sft.cern.ch/lcg/views/LCG_100/x86_64-centos7-gcc8-opt/lib': not a valid identifier
+Warning in <TInterpreter::ReadRootmapFile>: class  edm4hep::ObjectID found in libedm4drDict.so  is already in libedm4hepDict.so 
+Warning in <TGeoManager>: Changing system of units to ROOT units (cm, s, GeV).
+Error in <TTree::Bronch>: Cannot find dictionary for class: HepMC::GenEvent
+Warning in <TClassTable::Add>: class edm4hep::ObjectID already in TClassTable

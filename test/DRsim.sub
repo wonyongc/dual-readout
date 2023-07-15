@@ -1,0 +1,10 @@
+executable            = DRsim.sh
+output                = output/DRsim$(ClusterId).$(ProcId).out
+error                 = output/DRsim$(ClusterId).$(ProcId).err
+log                   = output/DRsim$(ClusterId).$(ProcId).log
+should_transfer_files = Yes
+when_to_transfer_output = ON_EXIT
++JobFlavour="workday"
++MaxRuntime = 3600
+queue
+

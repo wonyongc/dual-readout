@@ -1,0 +1,10 @@
+executable            = DRcalib.sh
+output                = output/DRcalib$(ClusterId).$(ProcId).out
+error                 = output/DRcalib$(ClusterId).$(ProcId).err
+log                   = output/DRcalib$(ClusterId).$(ProcId).log
+should_transfer_files = Yes
+transfer_input_files = digi.root, calib.csv, velo.root
+when_to_transfer_output = ON_EXIT
++MaxRuntime = 3600
+queue
+

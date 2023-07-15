@@ -1,0 +1,183 @@
+ApplicationMgr    SUCCESS 
+====================================================================================================================================
+                                                   Welcome to ApplicationMgr (GaudiCoreSvc v35r1)
+                                          running on b7g21p2260.cern.ch on Tue Apr 18 18:44:58 2023
+====================================================================================================================================
+ApplicationMgr       INFO Application Manager Configured successfully
+PersistencyIO    INFO  +++ Set Streamer to dd4hep::OpaqueDataBlock
+GeoSvc               INFO loading geometry from file:  'file:/afs/cern.ch/user/w/wochung/private/dual-readout/install/share/compact/DRcalo.xml'
+DD4hep           WARN  ++ STD conditions NOT defined by client. NTP defaults taken.
+Detector         INFO  *********** Created World volume with size: 1000 1000 1000
+Compact          INFO  ++ Converted subdetector:DRcalo of type ddDRcalo [DRcaloSiPMSD]
+Detector         INFO  +++ Patching names of anonymous shapes....
+DD4hepVolumeManager INFO  **** running plugin DD4hepVolumeManager ! 
+VolumeManager    INFO   - populating volume ids - be patient ...
+VolumeManager    INFO   - populating volume ids - done. 52072 nodes.
+VolumeManager    INFO  +++ Volume manager populated and loaded.
+GeoSvc               INFO DD4Hep geometry SUCCESSFULLY built
+GeoSvc               INFO Geant4 geometry SUCCESSFULLY built
+DRcalib2D           DEBUG Property update for OutputLevel : new value = 2
+DRcalib2D           DEBUG Initialize base class GaudiCommon<Algorithm>
+DRcalib2D           DEBUG could not locate CounterSummarySvc, no counter summary will be made
+DRcalib2D           DEBUG List of ALL properties of DRcalib2D/DRcalib2D  #properties = 38
+DRcalib2D           DEBUG Property ['Name': Value] =  'GeoSvc':GeoSvc
+DRcalib2D           DEBUG Property ['Name': Value] =  'sampling':0.10000000
+DRcalib2D           DEBUG Property ['Name': Value] =  'readoutName':'DRcaloSiPMreadout'
+DRcalib2D           DEBUG Property ['Name': Value] =  'calibPath':'calib.csv'
+DRcalib2D           DEBUG Property ['Name': Value] =  'RequireObjects':[  ]
+DRcalib2D           DEBUG Property ['Name': Value] =  'VetoObjects':[  ]
+DRcalib2D           DEBUG Property ['Name': Value] =  'StatEntityList':[  ]
+DRcalib2D           DEBUG Property ['Name': Value] =  'CounterList':[ '.*' ]
+DRcalib2D           DEBUG Property ['Name': Value] =  'UseEfficiencyRowFormat':True
+DRcalib2D           DEBUG Property ['Name': Value] =  'EfficiencyRowFormat':' |*%|-48.48s|%|50t||%|10d| |%|11.5g| |(%|#9.6g| +- %|-#9.6g|)%%|   -------   |   -------   |'
+DRcalib2D           DEBUG Property ['Name': Value] =  'RegularRowFormat':' | %|-48.48s|%|50t||%|10d| |%|11.7g| |%|#11.5g| |%|#11.5g| |%|#12.5g| |%|#12.5g| |'
+DRcalib2D           DEBUG Property ['Name': Value] =  'StatTableHeader':' |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |'
+DRcalib2D           DEBUG Property ['Name': Value] =  'Context':''
+DRcalib2D           DEBUG Property ['Name': Value] =  'TypePrint':True
+DRcalib2D           DEBUG Property ['Name': Value] =  'PrintEmptyCounters':False
+DRcalib2D           DEBUG Property ['Name': Value] =  'PropertiesPrint':False
+DRcalib2D           DEBUG Property ['Name': Value] =  'ErrorsPrint':True
+DRcalib2D           DEBUG Property ['Name': Value] =  'RootInTES':''
+DRcalib2D           DEBUG Property ['Name': Value] =  'FilterCircularDependencies':True
+DRcalib2D           DEBUG Property ['Name': Value] =  'Blocking':False
+DRcalib2D           DEBUG Property ['Name': Value] =  'NeededResources':[  ]
+DRcalib2D           DEBUG Property ['Name': Value] =  'Cardinality':1
+DRcalib2D           DEBUG Property ['Name': Value] =  'RegisterForContextService':True
+DRcalib2D           DEBUG Property ['Name': Value] =  'MonitorService':'MonitorSvc'
+DRcalib2D           DEBUG Property ['Name': Value] =  'Timeline':False
+DRcalib2D           DEBUG Property ['Name': Value] =  'AuditStop':False
+DRcalib2D           DEBUG Property ['Name': Value] =  'AuditStart':False
+DRcalib2D           DEBUG Property ['Name': Value] =  'AuditFinalize':False
+DRcalib2D           DEBUG Property ['Name': Value] =  'AuditExecute':False
+DRcalib2D           DEBUG Property ['Name': Value] =  'AuditRestart':False
+DRcalib2D           DEBUG Property ['Name': Value] =  'AuditReinitialize':False
+DRcalib2D           DEBUG Property ['Name': Value] =  'AuditInitialize':False
+DRcalib2D           DEBUG Property ['Name': Value] =  'AuditAlgorithms':False
+DRcalib2D           DEBUG Property ['Name': Value] =  'ErrorMax':1
+DRcalib2D           DEBUG Property ['Name': Value] =  'Enable':True
+DRcalib2D           DEBUG Property ['Name': Value] =  'OutputLevel':2
+DRcalib2D           DEBUG Property ['Name': Value] =  'ExtraOutputs':[]
+DRcalib2D           DEBUG Property ['Name': Value] =  'ExtraInputs':[]
+DRcalib2D            INFO DRcalib2D initialized
+DRcalib2D           DEBUG input handles: 1
+DRcalib2D           DEBUG output handles: 1
+DRcalib2D           DEBUG Changing DigiCalorimeterHits to /Event/DigiCalorimeterHits
+DRcalib2D           DEBUG Changing DRcalo2dHits to /Event/DRcalo2dHits
+DRcalib2D           DEBUG Data Deps for DRcalib2D
+  + INPUT  '/Event/DigiCalorimeterHits'
+  + OUTPUT '/Event/DRcalo2dHits'
+DRcalib3D           DEBUG Property update for OutputLevel : new value = 2
+DRcalib3D           DEBUG Initialize base class GaudiCommon<Algorithm>
+DRcalib3D           DEBUG could not locate CounterSummarySvc, no counter summary will be made
+DRcalib3D           DEBUG List of ALL properties of DRcalib3D/DRcalib3D  #properties = 46
+DRcalib3D           DEBUG Property ['Name': Value] =  'GeoSvc':GeoSvc
+DRcalib3D           DEBUG Property ['Name': Value] =  'cherenScale':1.1250000
+DRcalib3D           DEBUG Property ['Name': Value] =  'scintScale':1.2320000
+DRcalib3D           DEBUG Property ['Name': Value] =  'nbins':900
+DRcalib3D           DEBUG Property ['Name': Value] =  'threshold':0.010000000
+DRcalib3D           DEBUG Property ['Name': Value] =  'gateLength':90.000000
+DRcalib3D           DEBUG Property ['Name': Value] =  'gateStart':10.000000
+DRcalib3D           DEBUG Property ['Name': Value] =  'sampling':0.10000000
+DRcalib3D           DEBUG Property ['Name': Value] =  'scintProf':'VeloS_pfx'
+DRcalib3D           DEBUG Property ['Name': Value] =  'cherenProf':'VeloC_pfx'
+DRcalib3D           DEBUG Property ['Name': Value] =  'veloFile':'velo.root'
+DRcalib3D           DEBUG Property ['Name': Value] =  'readoutName':'DRcaloSiPMreadout'
+DRcalib3D           DEBUG Property ['Name': Value] =  'RequireObjects':[  ]
+DRcalib3D           DEBUG Property ['Name': Value] =  'VetoObjects':[  ]
+DRcalib3D           DEBUG Property ['Name': Value] =  'StatEntityList':[  ]
+DRcalib3D           DEBUG Property ['Name': Value] =  'CounterList':[ '.*' ]
+DRcalib3D           DEBUG Property ['Name': Value] =  'UseEfficiencyRowFormat':True
+DRcalib3D           DEBUG Property ['Name': Value] =  'EfficiencyRowFormat':' |*%|-48.48s|%|50t||%|10d| |%|11.5g| |(%|#9.6g| +- %|-#9.6g|)%%|   -------   |   -------   |'
+DRcalib3D           DEBUG Property ['Name': Value] =  'RegularRowFormat':' | %|-48.48s|%|50t||%|10d| |%|11.7g| |%|#11.5g| |%|#11.5g| |%|#12.5g| |%|#12.5g| |'
+DRcalib3D           DEBUG Property ['Name': Value] =  'StatTableHeader':' |    Counter                                      |     #     |    sum     | mean/eff^* | rms/err^*  |     min     |     max     |'
+DRcalib3D           DEBUG Property ['Name': Value] =  'Context':''
+DRcalib3D           DEBUG Property ['Name': Value] =  'TypePrint':True
+DRcalib3D           DEBUG Property ['Name': Value] =  'PrintEmptyCounters':False
+DRcalib3D           DEBUG Property ['Name': Value] =  'PropertiesPrint':False
+DRcalib3D           DEBUG Property ['Name': Value] =  'ErrorsPrint':True
+DRcalib3D           DEBUG Property ['Name': Value] =  'RootInTES':''
+DRcalib3D           DEBUG Property ['Name': Value] =  'FilterCircularDependencies':True
+DRcalib3D           DEBUG Property ['Name': Value] =  'Blocking':False
+DRcalib3D           DEBUG Property ['Name': Value] =  'NeededResources':[  ]
+DRcalib3D           DEBUG Property ['Name': Value] =  'Cardinality':1
+DRcalib3D           DEBUG Property ['Name': Value] =  'RegisterForContextService':True
+DRcalib3D           DEBUG Property ['Name': Value] =  'MonitorService':'MonitorSvc'
+DRcalib3D           DEBUG Property ['Name': Value] =  'Timeline':False
+DRcalib3D           DEBUG Property ['Name': Value] =  'AuditStop':False
+DRcalib3D           DEBUG Property ['Name': Value] =  'AuditStart':False
+DRcalib3D           DEBUG Property ['Name': Value] =  'AuditFinalize':False
+DRcalib3D           DEBUG Property ['Name': Value] =  'AuditExecute':False
+DRcalib3D           DEBUG Property ['Name': Value] =  'AuditRestart':False
+DRcalib3D           DEBUG Property ['Name': Value] =  'AuditReinitialize':False
+DRcalib3D           DEBUG Property ['Name': Value] =  'AuditInitialize':False
+DRcalib3D           DEBUG Property ['Name': Value] =  'AuditAlgorithms':False
+DRcalib3D           DEBUG Property ['Name': Value] =  'ErrorMax':1
+DRcalib3D           DEBUG Property ['Name': Value] =  'Enable':True
+DRcalib3D           DEBUG Property ['Name': Value] =  'OutputLevel':2
+DRcalib3D           DEBUG Property ['Name': Value] =  'ExtraOutputs':[]
+DRcalib3D           DEBUG Property ['Name': Value] =  'ExtraInputs':[]
+DRcalib3D            INFO DRcalib3D initialized
+DRcalib3D           DEBUG input handles: 3
+DRcalib3D           DEBUG output handles: 2
+DRcalib3D           DEBUG Changing DRcalo2dHits to /Event/DRcalo2dHits
+DRcalib3D           DEBUG Changing DigiCalorimeterHits to /Event/DigiCalorimeterHits
+DRcalib3D           DEBUG Changing DigiWaveforms to /Event/DigiWaveforms
+DRcalib3D           DEBUG Changing DRpostprocTime to /Event/DRpostprocTime
+DRcalib3D           DEBUG Changing DRcalo3dHits to /Event/DRcalo3dHits
+DRcalib3D           DEBUG Data Deps for DRcalib3D
+  + INPUT  '/Event/DRcalo2dHits'
+  + INPUT  '/Event/DigiCalorimeterHits'
+  + INPUT  '/Event/DigiWaveforms'
+  + OUTPUT '/Event/DRcalo3dHits'
+  + OUTPUT '/Event/DRpostprocTime'
+EventLoopMgr      WARNING Unable to locate service "EventSelector" 
+EventLoopMgr      WARNING No events will be processed from external input.
+ApplicationMgr       INFO Application Manager Initialized successfully
+ApplicationMgr       INFO Application Manager Started successfully
+vector<float>
+vector<float>
+vector<float>
+vector<float>
+vector<float>
+vector<float>
+vector<float>
+vector<float>
+ApplicationMgr       INFO Application Manager Stopped successfully
+DRcalib2D           DEBUG Finalize base class GaudiAlgorithm
+DRcalib2D           DEBUG Tools to release :
+DRcalib2D           DEBUG Services to release :
+DRcalib3D           DEBUG Finalize base class GaudiAlgorithm
+DRcalib3D           DEBUG Tools to release :
+DRcalib3D           DEBUG Services to release :
+EventLoopMgr         INFO Histograms converted successfully according to request.
+ApplicationMgr       INFO Application Manager Finalized successfully
+ApplicationMgr       INFO Application Manager Terminated successfully
+ -->  PodioInput -->  DRcalib2D -->  DRcalib3D -->  PodioOutput 
+
+Option name: PodioInput.OutputLevel PodioInput.OutputLevel 0
+Option name: PodioInput.collections PodioInput.collections ['DigiCalorimeterHits', 'DigiWaveforms', 'RawTimeStructs', 'RawCalorimeterHits', 'SimCalorimeterHits', 'Sim3dCalorimeterHits', 'RawWavlenStructs', 'GenParticles', 'Leakages']
+Option name: DRcalib3D.OutputLevel DRcalib3D.OutputLevel 2
+Option name: DRcalib3D.readoutName DRcalib3D.readoutName DRcaloSiPMreadout
+Option name: DRcalib3D.veloFile DRcalib3D.veloFile velo.root
+Option name: DRcalib3D.cherenProf DRcalib3D.cherenProf VeloC_pfx
+Option name: DRcalib3D.scintProf DRcalib3D.scintProf VeloS_pfx
+Option name: DRcalib3D.sampling DRcalib3D.sampling 0.1
+Option name: DRcalib3D.gateStart DRcalib3D.gateStart 10.0
+Option name: DRcalib3D.gateLength DRcalib3D.gateLength 90.0
+Option name: DRcalib3D.threshold DRcalib3D.threshold 0.01
+Option name: DRcalib3D.nbins DRcalib3D.nbins 900
+Option name: DRcalib3D.scintScale DRcalib3D.scintScale 1.232
+Option name: DRcalib3D.cherenScale DRcalib3D.cherenScale 1.125
+Option name: PodioOutput.OutputLevel PodioOutput.OutputLevel 0
+Option name: PodioOutput.filename PodioOutput.filename reco3D.root
+Option name: PodioOutput.outputCommands PodioOutput.outputCommands ['keep *']
+Option name: PodioOutput.remoteFilename PodioOutput.remoteFilename 
+Option name: GeoSvc.OutputLevel GeoSvc.OutputLevel 0
+Option name: GeoSvc.detectors GeoSvc.detectors ['file:/afs/cern.ch/user/w/wochung/private/dual-readout/install/share/compact/DRcalo.xml']
+Option name: EventDataSvc.OutputLevel EventDataSvc.OutputLevel 0
+Option name: EventDataSvc.input EventDataSvc.input digi.root
+Option name: EventDataSvc.FirstEventEntry EventDataSvc.FirstEventEntry 0
+Option name: DRcalib2D.OutputLevel DRcalib2D.OutputLevel 2
+Option name: DRcalib2D.calibPath DRcalib2D.calibPath calib.csv
+Option name: DRcalib2D.readoutName DRcalib2D.readoutName DRcaloSiPMreadout
+Option name: DRcalib2D.sampling DRcalib2D.sampling 0.1

@@ -1,0 +1,36 @@
+DRenv.sh: line 20: export: `-w': not a valid identifier
+DRenv.sh: line 29: export: `-ne': not a valid identifier
+DRenv.sh: line 29: export: `\033]0;/afs/cern.ch/user/w/wochung/private/dual-readout/install/test\007': not a valid identifier
+DRenv.sh: line 74: export: `-lz': not a valid identifier
+DRenv.sh: line 74: export: `-lGL': not a valid identifier
+DRenv.sh: line 74: export: `-lGLU': not a valid identifier
+DRenv.sh: line 74: export: `-lfontconfig': not a valid identifier
+DRenv.sh: line 74: export: `-lfreetype': not a valid identifier
+DRenv.sh: line 74: export: `-lX11': not a valid identifier
+DRenv.sh: line 74: export: `-lncurses': not a valid identifier
+DRenv.sh: line 74: export: `-lpcre': not a valid identifier
+DRenv.sh: line 74: export: `-ldl': not a valid identifier
+DRenv.sh: line 74: export: `-lgfortran': not a valid identifier
+DRenv.sh: line 74: export: `-lm': not a valid identifier
+DRenv.sh: line 74: export: `-lquadmath': not a valid identifier
+DRenv.sh: line 74: export: `-lutil': not a valid identifier
+DRenv.sh: line 74: export: `-lm': not a valid identifier
+DRenv.sh: line 74: export: `-L/cvmfs/sft.cern.ch/lcg/views/LCG_100/x86_64-centos7-gcc8-opt/lib': not a valid identifier
+DRenv.sh: line 75: export: `-lz': not a valid identifier
+DRenv.sh: line 75: export: `-lGL': not a valid identifier
+DRenv.sh: line 75: export: `-lGLU': not a valid identifier
+DRenv.sh: line 75: export: `-lfontconfig': not a valid identifier
+DRenv.sh: line 75: export: `-lfreetype': not a valid identifier
+DRenv.sh: line 75: export: `-lX11': not a valid identifier
+DRenv.sh: line 75: export: `-lncurses': not a valid identifier
+DRenv.sh: line 75: export: `-lpcre': not a valid identifier
+DRenv.sh: line 75: export: `-ldl': not a valid identifier
+DRenv.sh: line 75: export: `-lgfortran': not a valid identifier
+DRenv.sh: line 75: export: `-lm': not a valid identifier
+DRenv.sh: line 75: export: `-lquadmath': not a valid identifier
+DRenv.sh: line 75: export: `-lutil': not a valid identifier
+DRenv.sh: line 75: export: `-lm': not a valid identifier
+DRenv.sh: line 75: export: `-L/cvmfs/sft.cern.ch/lcg/views/LCG_100/x86_64-centos7-gcc8-opt/lib': not a valid identifier
+Warning in <TInterpreter::ReadRootmapFile>: class  edm4hep::ObjectID found in libedm4drDict.so  is already in libedm4hepDict.so 
+Warning in <TClassTable::Add>: class edm4hep::ObjectID already in TClassTable
+Warning in <TGeoManager>: Changing system of units to ROOT units (cm, s, GeV).
