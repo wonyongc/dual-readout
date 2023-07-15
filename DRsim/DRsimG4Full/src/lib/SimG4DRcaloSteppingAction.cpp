@@ -27,10 +27,12 @@ void SimG4DRcaloSteppingAction::UserSteppingAction(const G4Step* step) {
 
   G4VPhysicalVolume* PreStepVolume = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume();
   std::cout<<"Pre-step Volume Name: " << PreStepVolume->GetName() << std::endl;
+  std::cout<<"Particle Name, Type, SubType: " << particle->GetParticleName()<< " "<<particle->GetParticleType() << " "<<particle->GetParticleSubType()<< std::endl;
+
 
   G4TouchableHandle theTouchable = presteppoint->GetTouchableHandle();
 
-  //  if ( theTouchable->GetHistoryDepth()<2 ) return; // skip particles in the world or assembly volume
+  if ( theTouchable->GetHistoryDepth()<2 ) return; // skip particles in the world or assembly volume
 
   //historyDepth    world
   //historyDepth-1  experimentalhall (detector)
@@ -40,11 +42,12 @@ void SimG4DRcaloSteppingAction::UserSteppingAction(const G4Step* step) {
 
   std::bitset<32> volIdbits(volID);
 
-  int system = (volID) & 32;
-  int eta = (volID >> 5) & 1024;
-  int phi = (volID >> 15) & 1024;
-  int depth = (volID >> 25) & 8;
+  int system = (volID) & (32-1);
+  int eta = (volID >> 5) & (1024-1);
+  int phi = (volID >> 15) & (1024-1);
+  int depth = (volID >> 25) & (8-1);
 
+  std::cout << "Stepping Action start: history depth: " << theTouchable->GetHistoryDepth() <<std::endl;
   std::cout << "Stepping Action start: volID bits: " << volIdbits <<std::endl;
   std::cout << "Stepping Action start: system: " << system << " eta: "<<eta<<" phi: "<<phi<<" depth: "<< depth <<std::endl;
 
@@ -64,13 +67,20 @@ void SimG4DRcaloSteppingAction::ECALSteppingAction(const G4Step* step, G4StepPoi
   G4TouchableHandle theTouchable = presteppoint->GetTouchableHandle();
 
   float edep=step->GetTotalEnergyDeposit()*CLHEP::MeV/CLHEP::GeV;
-  int towerNum32=theTouchable->GetCopyNumber(theTouchable->GetHistoryDepth()-2);
+//  int towerNum32=theTouchable->GetCopyNumber(theTouchable->GetHistoryDepth()-2);
+  int towerNum32=theTouchable->GetCopyNumber();
 
-  int system=(towerNum32)&32;
-  int eta=(towerNum32>>5)&1024;
-  int phi=(towerNum32>>15)&1024;
-  int depth=(towerNum32>>25)&8;
-  std::cout<<"ECAL crystal eta: "<<eta<<" phi: "<<phi<<" depth: "<< depth <<std::endl;
+  std::bitset<32> towerNum32bits(towerNum32);
+
+  int system = (towerNum32) & (32-1);
+  int eta = (towerNum32 >> 5) & (1024-1);
+  int phi = (towerNum32 >> 15) & (1024-1);
+  int depth = (towerNum32 >> 25) & (8-1);
+
+  std::cout << "  ECALSteppingAction start: history depth: " << theTouchable->GetHistoryDepth() <<std::endl;
+  std::cout << "  ECALSteppingAction start: towerNum32 bits: " << towerNum32bits <<std::endl;
+  std::cout<<"  ECAL crystal eta: "<<eta<<" phi: "<<phi<<" depth: "<< depth <<std::endl;
+  std::cout<<"  ECAL crystal edep: "<<edep<<std::endl;
 
   auto towerNum64=pSegECAL->convertFirst32to64(towerNum32);
 
@@ -82,6 +92,9 @@ void SimG4DRcaloSteppingAction::ECALSteppingAction(const G4Step* step, G4StepPoi
       simEdep3dECALF.setEnergy(edep);
 
       auto &pos=presteppoint->GetPosition();
+
+      std::cout<<"    ECAL step position x: "<<pos.x()*CLHEP::millimeter<<" y: "<<pos.y()*CLHEP::millimeter<<" z: "<< pos.z()*CLHEP::millimeter <<std::endl;
+
       simEdep3dECALF.setPosition({static_cast<float>(pos.x()*CLHEP::millimeter),
                              static_cast<float>(pos.y()*CLHEP::millimeter),
                              static_cast<float>(pos.z()*CLHEP::millimeter)});
@@ -95,6 +108,8 @@ void SimG4DRcaloSteppingAction::ECALSteppingAction(const G4Step* step, G4StepPoi
       simEdep3dECALR.setEnergy(edep);
 
       auto &pos=presteppoint->GetPosition();
+      std::cout<<"    ECAL step position x: "<<pos.x()*CLHEP::millimeter<<" y: "<<pos.y()*CLHEP::millimeter<<" z: "<< pos.z()*CLHEP::millimeter <<std::endl;
+
       simEdep3dECALR.setPosition({static_cast<float>(pos.x()*CLHEP::millimeter),
                              static_cast<float>(pos.y()*CLHEP::millimeter),
                              static_cast<float>(pos.z()*CLHEP::millimeter)});
@@ -139,11 +154,17 @@ void SimG4DRcaloSteppingAction::HCALSteppingAction(const G4Step* step, G4StepPoi
   float edep = step->GetTotalEnergyDeposit()*CLHEP::MeV/CLHEP::GeV;
   int towerNum32 = theTouchable->GetCopyNumber( theTouchable->GetHistoryDepth()-2 );
 
-  int system = (towerNum32) & 32;
-  int eta = (towerNum32 >> 5) & 1024;
-  int phi = (towerNum32 >> 15) & 1024;
-  int depth = (towerNum32 >> 25) & 8;
-  std::cout << "HCAL tower eta: " << eta << " phi: " << phi << " depth: " << depth << std::endl;
+  std::bitset<32> towerNum32bits(towerNum32);
+
+  int system = (towerNum32) & (32-1);
+  int eta = (towerNum32 >> 5) & (1024-1);
+  int phi = (towerNum32 >> 15) & (1024-1);
+  int depth = (towerNum32 >> 25) & (8-1);
+
+  std::cout << "  HCALSteppingAction start: history depth: " << theTouchable->GetHistoryDepth() <<std::endl;
+  std::cout << "  HCALSteppingAction start: towerNum32 bits: " << towerNum32bits <<std::endl;
+  std::cout << "  HCAL tower eta: " << eta << " phi: " << phi << " depth: " << depth << std::endl;
+  std::cout << "  HCAL crystal edep: "<<edep<<std::endl;
 
   auto towerNum64 = pSegHCAL->convertFirst32to64( towerNum32 );
 
@@ -163,6 +184,9 @@ void SimG4DRcaloSteppingAction::HCALSteppingAction(const G4Step* step, G4StepPoi
 }
 
 void SimG4DRcaloSteppingAction::accumulateECALF(unsigned int &prev, dd4hep::DDSegmentation::CellID& id64, float edep) {
+  std::cout<<"      Accumulate ECAL F: "<<std::endl;
+  std::cout<<"      Accumulate ECAL F edep: "<<edep<<std::endl;
+
   // search for the element
   bool found = false;
   edm4hep::SimCalorimeterHit* thePtr = nullptr;
@@ -176,7 +200,9 @@ void SimG4DRcaloSteppingAction::accumulateECALF(unsigned int &prev, dd4hep::DDSe
   }
 
   if (!found) { // fall back to loop
-    for (unsigned int iElement = m_EdepsECALF->size()-1; iElement >=0; iElement--) {
+    std::cout<<"      Accumulate ECAL F loop: "<<std::endl;
+
+    for (unsigned int iElement = 0; iElement<m_EdepsECALF->size(); iElement++) {
       auto element = m_EdepsECALF->at(iElement);
       if ( checkId(element, id64) ) {
         found = true;
@@ -189,6 +215,8 @@ void SimG4DRcaloSteppingAction::accumulateECALF(unsigned int &prev, dd4hep::DDSe
   }
 
   if (!found) { // create
+    std::cout<<"      Accumulate ECAL F create: "<<std::endl;
+
     auto simEdepECALF = m_EdepsECALF->create();
     simEdepECALF.setCellID( static_cast<unsigned long long>(id64) );
     simEdepECALF.setEnergy(0.); // added later
@@ -206,6 +234,9 @@ void SimG4DRcaloSteppingAction::accumulateECALF(unsigned int &prev, dd4hep::DDSe
   thePtr->setEnergy( edepPrev + edep );
 }
 void SimG4DRcaloSteppingAction::accumulateECALR(unsigned int &prev, dd4hep::DDSegmentation::CellID& id64, float edep) {
+  std::cout<<"      Accumulate ECAL R: "<<std::endl;
+  std::cout<<"      Accumulate ECAL R edep: "<<edep<<std::endl;
+
   // search for the element
   bool found = false;
   edm4hep::SimCalorimeterHit* thePtr = nullptr;
@@ -219,7 +250,9 @@ void SimG4DRcaloSteppingAction::accumulateECALR(unsigned int &prev, dd4hep::DDSe
   }
 
   if (!found) { // fall back to loop
-    for (unsigned int iElement = m_EdepsECALR->size()-1; iElement >=0; iElement--) {
+    std::cout<<"      Accumulate ECAL R loop: "<<std::endl;
+
+    for (unsigned int iElement = 0; iElement<m_EdepsECALR->size(); iElement++) {
       auto element = m_EdepsECALR->at(iElement);
       if ( checkId(element, id64) ) {
         found = true;
@@ -232,6 +265,8 @@ void SimG4DRcaloSteppingAction::accumulateECALR(unsigned int &prev, dd4hep::DDSe
   }
 
   if (!found) { // create
+    std::cout<<"      Accumulate ECAL R create: "<<std::endl;
+
     auto simEdepECALR = m_EdepsECALR->create();
     simEdepECALR.setCellID( static_cast<unsigned long long>(id64) );
     simEdepECALR.setEnergy(0.); // added later
@@ -249,6 +284,8 @@ void SimG4DRcaloSteppingAction::accumulateECALR(unsigned int &prev, dd4hep::DDSe
   thePtr->setEnergy( edepPrev + edep );
 }
 void SimG4DRcaloSteppingAction::accumulateECALFCher(unsigned int &prev, dd4hep::DDSegmentation::CellID& id64) {
+  std::cout<<"      Accumulate ECAL F Cher: "<<std::endl;
+
   // search for the element
   bool found = false;
   edm4hep::SimCalorimeterHit* thePtr = nullptr;
@@ -262,7 +299,9 @@ void SimG4DRcaloSteppingAction::accumulateECALFCher(unsigned int &prev, dd4hep::
   }
 
   if (!found) { // fall back to loop
-    for (unsigned int iElement = m_EdepsECALFCher->size()-1; iElement >=0; iElement--) {
+    std::cout<<"      Accumulate ECAL F Cher loop: "<<std::endl;
+
+    for (unsigned int iElement = 0; iElement<m_EdepsECALFCher->size(); iElement++) {
       auto element = m_EdepsECALFCher->at(iElement);
       if ( checkId(element, id64) ) {
         found = true;
@@ -275,6 +314,8 @@ void SimG4DRcaloSteppingAction::accumulateECALFCher(unsigned int &prev, dd4hep::
   }
 
   if (!found) { // create
+    std::cout<<"      Accumulate ECAL F Cher create: "<<std::endl;
+
     auto simEdepECALFCher = m_EdepsECALFCher->create();
     simEdepECALFCher.setCellID( static_cast<unsigned long long>(id64) );
     simEdepECALFCher.setEnergy(0.); // added later
@@ -292,6 +333,8 @@ void SimG4DRcaloSteppingAction::accumulateECALFCher(unsigned int &prev, dd4hep::
   thePtr->setEnergy( edepPrev + 1 );
 }
 void SimG4DRcaloSteppingAction::accumulateECALRCher(unsigned int &prev, dd4hep::DDSegmentation::CellID& id64) {
+  std::cout<<"      Accumulate ECAL R Cher: "<<std::endl;
+
   // search for the element
   bool found = false;
   edm4hep::SimCalorimeterHit* thePtr = nullptr;
@@ -305,7 +348,9 @@ void SimG4DRcaloSteppingAction::accumulateECALRCher(unsigned int &prev, dd4hep::
   }
 
   if (!found) { // fall back to loop
-    for (unsigned int iElement = m_EdepsECALRCher->size()-1; iElement >=0; iElement--) {
+    std::cout<<"      Accumulate ECAL R Cher loop: "<<std::endl;
+
+    for (unsigned int iElement = 0; iElement<m_EdepsECALRCher->size(); iElement++) {
       auto element = m_EdepsECALRCher->at(iElement);
       if ( checkId(element, id64) ) {
         found = true;
@@ -318,6 +363,8 @@ void SimG4DRcaloSteppingAction::accumulateECALRCher(unsigned int &prev, dd4hep::
   }
 
   if (!found) { // create
+    std::cout<<"      Accumulate ECAL R Cher create: "<<std::endl;
+
     auto simEdepECALRCher = m_EdepsECALRCher->create();
     simEdepECALRCher.setCellID( static_cast<unsigned long long>(id64) );
     simEdepECALRCher.setEnergy(0.); // added later
@@ -336,6 +383,9 @@ void SimG4DRcaloSteppingAction::accumulateECALRCher(unsigned int &prev, dd4hep::
 }
 
 void SimG4DRcaloSteppingAction::accumulateHCAL(unsigned int &prev, dd4hep::DDSegmentation::CellID& id64, float edep) {
+  std::cout<<"      Accumulate HCAL: "<<std::endl;
+  std::cout<<"      Accumulate HCAL edep: "<<edep<<std::endl;
+
   // search for the element
   bool found = false;
   edm4hep::SimCalorimeterHit* thePtr = nullptr;
@@ -349,7 +399,9 @@ void SimG4DRcaloSteppingAction::accumulateHCAL(unsigned int &prev, dd4hep::DDSeg
   }
 
   if (!found) { // fall back to loop
-    for (unsigned int iElement = m_EdepsHCAL->size()-1; iElement >=0; iElement--) {
+    std::cout<<"      Accumulate HCAL loop: "<<std::endl;
+
+    for (unsigned int iElement = 0; iElement<m_EdepsHCAL->size(); iElement++) {
       auto element = m_EdepsHCAL->at(iElement);
       if ( checkId(element, id64) ) {
         found = true;
@@ -362,6 +414,8 @@ void SimG4DRcaloSteppingAction::accumulateHCAL(unsigned int &prev, dd4hep::DDSeg
   }
 
   if (!found) { // create
+    std::cout<<"      Accumulate HCAL create: "<<std::endl;
+
     auto simEdepHCAL = m_EdepsHCAL->create();
     simEdepHCAL.setCellID( static_cast<unsigned long long>(id64) );
     simEdepHCAL.setEnergy(0.); // added later
@@ -384,6 +438,9 @@ bool SimG4DRcaloSteppingAction::checkId(edm4hep::SimCalorimeterHit edep, dd4hep:
 }
 
 void SimG4DRcaloSteppingAction::saveLeakage(G4Track* track, G4StepPoint* presteppoint) {
+  std::cout<<"Leakage particle: "<<std::endl;
+  std::cout<<"Leakage position x: "<<presteppoint->GetPosition().x()*CLHEP::millimeter<<" y: "<<presteppoint->GetPosition().y()*CLHEP::millimeter<<" z: "<< presteppoint->GetPosition().z()*CLHEP::millimeter <<std::endl;
+
   auto leakage = m_Leakages->create();
   leakage.setPDG( track->GetDefinition()->GetPDGEncoding() );
   leakage.setGeneratorStatus(1); // leakages naturally belong to final states

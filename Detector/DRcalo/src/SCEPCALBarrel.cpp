@@ -375,7 +375,8 @@ namespace ddDRcalo {
       }
 
       dd4hep::PlacedVolume hallPlace=theDetector.pickMotherVolume(drDet).placeVolume(experimentalHall);
-      hallPlace.addPhysVolID("system", detectorXML.id());
+//      hallPlace.addPhysVolID("system", detectorXML.id());
+      hallPlace.addPhysVolID("system", 0);
 
       drDet.setPlacement(hallPlace);
 
