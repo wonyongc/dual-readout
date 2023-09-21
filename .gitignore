@@ -55,3 +55,9 @@ CTestTestfile.cmake
 CPackSourceConfig.cmake
 CPackConfig.cmake
 cmake_install.cmake
+
+.idea
+result
+share
+python
+cmake-build-debug
